@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VersionBumper.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="InterestFilePattern" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">AssemblyInfo.cs|Product.wxs</Value>
+    </Setting>
+    <Setting Name="TFSServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://yourserver:8080/tfs</Value>
+    </Setting>
+    <Setting Name="TFSLogin" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="TFSPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="TFSWorkspace" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

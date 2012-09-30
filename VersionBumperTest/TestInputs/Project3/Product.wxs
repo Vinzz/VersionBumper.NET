@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <?if $(var.Configuration) = Debug ?>
+  <?include $(sys.CURRENTDIR)\variable_dev.wxi ?>
+  <?else?>
+  <?include $(sys.CURRENTDIR)\variable.wxi ?>
+  <?endif?>
+  
+	<Product Id="9FD5BFCE-4B47-4CD0-9400-350C0C2A4E10" Name="GCS.StandardCosting.CentralService.Setup" Language="1033" Version="2.0.0.2" Manufacturer="GCS.StandardCosting.CentralService.Setup" UpgradeCode="D3FB2C99-0BC2-4BFA-914C-DD49CC628F70">
+		<Package InstallerVersion="200" Compressed="yes" />
+
+		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <!-- Installation condition : Framework .Net 4.0-->
+    <PropertyRef Id="NETFRAMEWORK40FULL"/>
+    <Condition Message="This application requires .NET Framework 4.0. Please install the .NET Framework then run this installer again.">
+      <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+    </Condition>
+
+    <!-- Step 1: Define the directory structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="APPLICATIONROOTDIRECTORY" Name="GCS Costing Central Service"/>
+      </Directory>
+    </Directory>
+
+    <!-- Step 2: Add files to your installer package -->
+    
+    <!-- GCS Costing Central Service dir -->
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+
+      <!-- /Resources subdir -->
+      <Directory Id="ResourcesDir" Name ="Resources">
+        <Component Id="ResourcesFiles" Guid="7E5C7914-4339-463a-BF7C-D376E23D82F7">
+          <File Id="ErrorReport" Source="$(var.Reports_dir)\Error Report.xls" />
+          <File Id="Report1" Source="$(var.Reports_dir)\1 - Calculation Check and Material Requirement.xls" />
+          <File Id="Report2" Source="$(var.Reports_dir)\2 - Manufacturing Data.xls" />
+          <File Id="Report3" Source="$(var.Reports_dir)\3 - Allocation Report.xls" />
+          <File Id="Report4" Source="$(var.Reports_dir)\4 - Cost Report.xls" />
+          <File Id="Report5" Source="$(var.Reports_dir)\5 - Exception Report.xls" />
+          <File Id="Report6" Source="$(var.Reports_dir)\6 - JDE hourly rates.xls" />
+        </Component>
+      </Directory>
+      
+      <!-- /RoboCopy/BatchFile subdir -->
+      <Directory Id="RobocopyDir" Name ="RoboCopy">
+        <Directory Id="BatchFile" Name ="BatchFile">
+          <!-- content -->
+          <Component Id="BatchFileFiles" Guid="CBE7A4B9-28A7-4787-9C9B-82CD77D01DD7">
+            <File Id="CopyScript.bat" Source="$(var.CentralService_dir)\RoboCopy\BatchFile\CopyScript.bat" />
+            <File Id="Robocopy.exe" Source="$(var.CentralService_dir)\RoboCopy\BatchFile\robocopy.exe" />
+          </Component>
+        </Directory>
+        <Component Id="RobocopyFiles" Guid="E9A0364E-654F-44d8-AEB2-8DEE9B8B7E03">
+          <CreateFolder/>
+        </Component>
+      </Directory>
+
+      <!-- content -->
+      <Component Id="Service.exe" Guid="D5C055F6-FC46-4841-89B3-566A6D279A4D">
+        <File Id="Service.exe" Source="$(var.CentralService_dir)\GCS.StandardCosting.CentralService.exe" />
+        <File Id="FlexCel.dll" Source="$(var.CentralService_dir)\FlexCel.dll" />
+        <File Id="GCS.StandardCosting.Business.dll" Source="$(var.CentralService_dir)\GCS.StandardCosting.Business.dll" />
+        <File Id="GCS.StandardCosting.CentralService.exe.config" Source="$(var.CentralService_dir)\GCS.StandardCosting.CentralService.exe.config" />
+        <File Id="GCS.StandardCosting.Core.dll" Source="$(var.CentralService_dir)\GCS.StandardCosting.Core.dll" />
+        <File Id="GCS.StandardCosting.Interface.dll" Source="$(var.CentralService_dir)\GCS.StandardCosting.Interface.dll" />
+        <File Id="GCS.StandardCosting.Logger.dll" Source="$(var.CentralService_dir)\GCS.StandardCosting.Logger.dll" />
+        <File Id="GCS.StandardCosting.SharpZipLib" Source="$(var.CentralService_dir)\ICSharpCode.SharpZipLib.dll" />
+        <File Id="GCS.StandardCosting.Tree2" Source="$(var.CentralService_dir)\Tree2.dll" />
+        <File Id="GCS.StandardCosting.Tools.dll" Source="$(var.CentralService_dir)\GCS.StandardCosting.Tools.dll" />
+        <File Id="log4net.dll" Source="$(var.CentralService_dir)\log4net.dll" />
+        <!--<File Id="toto" Source="$(var.CentralService_dir)\toto" />-->
+
+        <!-- Register the windows service -->
+        <ServiceInstall Id='CentralServiceInstall' DisplayName='GCS StandardCosting CentralService' Name='GCS.StandardCosting.CentralService'
+          ErrorControl='normal' Start='auto' Type='ownProcess' Account="LocalSystem" Vital='yes'  Interactive="yes">
+        </ServiceInstall>
+        <ServiceControl Id='CentralServiceInstallControl' Name='GCS.StandardCosting.CentralService'
+          Stop='uninstall' Remove='uninstall' />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Step 3: Tell WiX to install the files -->
+    <Feature Id="MainApplication" Title="Main Application" Level="1">
+      <ComponentRef Id="Service.exe" /> 
+      <ComponentRef Id="BatchFileFiles" />
+      <ComponentRef Id="RobocopyFiles" />
+      <ComponentRef Id="ResourcesFiles" />
+    </Feature>
+
+  </Product>
+</Wix>

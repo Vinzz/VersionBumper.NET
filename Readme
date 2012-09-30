@@ -1,0 +1,16 @@
+Bumps once and for all the assemblies and installers from a project.
+
+* Recursively fetches all files in a directory tree
+* Bumps AssemblyInfo.cs [assembly: AssemblyVersion] tag
+* Bumps Wix's *.wsx files for Version attribute
+
+TFS 2010 compliant (edited files will be marked as changed), 
+through the app settings.
+
+Syntax:
+
+- VersionBumper.exe <path of the project> major minor build revision
+
+Sample:
+
+- VersionBumper.exe "c:\my app" 2 0 0 8
